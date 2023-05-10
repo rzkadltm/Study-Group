@@ -1,0 +1,13 @@
+<h3>Recent Activitest</h3>
+<hr />
+{% for message in room_messages %}
+<div>
+  <small>@{{message.user}} {{message.created|timesince}}</small>
+  <small>Reply to "{{message.room}}"</small>
+  <!-- inside p tag only message without body is because we've set the default returning body in database-->
+  <p>{{message}}</p>
+  {% if request.user == message.user %}
+  <a href="{% url 'delete-message' message.id %}">Delete</a>
+  {% endif %}
+</div>
+{% endfor %}

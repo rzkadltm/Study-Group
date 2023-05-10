@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm  # Create User Form
 from django.contrib import messages
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from .models import Room, Topic, Message
 from .forms import RoomForm
 
@@ -62,6 +64,14 @@ def registerPage(request):
             messages.error(request, 'An Error Occured during registration')
     context = {'form': form}
     return render(request, 'base/login_register.html', context)
+
+
+@receiver(pre_delete, sender=User)
+def on_user_delete(sender, instance, **kwargs):
+    rooms = Room.objects.filter(host=instance)
+    for room in rooms:
+        room.host = None
+        room.save()
 
 
 def home(request):
