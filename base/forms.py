@@ -1,11 +1,22 @@
 from django.forms import ModelForm
-from .models import Room
+from django.contrib.auth.forms import UserCreationForm
+from .models import Room, User
 
-# ModelForm is a package for creating form from model
+
+class MyUserCreationForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ['name', 'username', 'email', 'password1', 'password2']
 
 
 class RoomForm(ModelForm):
     class Meta:
         model = Room
-        # # '__all__ is gonna import all the field in Room's Model'
         fields = '__all__'
+        exclude = ['host', 'participants']
+
+
+class UserForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['avatar', 'name', 'username', 'email', 'bio']
